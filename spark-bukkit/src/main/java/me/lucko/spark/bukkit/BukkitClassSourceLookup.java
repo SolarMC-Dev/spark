@@ -27,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 
 public class BukkitClassSourceLookup extends ClassSourceLookup.ByClassLoader {
+/* // Solar start - disable
     private static final Class<?> PLUGIN_CLASS_LOADER;
     private static final Field PLUGIN_FIELD;
 
@@ -39,13 +40,16 @@ public class BukkitClassSourceLookup extends ClassSourceLookup.ByClassLoader {
             throw new ExceptionInInitializerError(e);
         }
     }
+*/ // Solar end
 
     @Override
     public String identify(ClassLoader loader) throws ReflectiveOperationException {
+        /* // Solar start - disable
         if (PLUGIN_CLASS_LOADER.isInstance(loader)) {
             JavaPlugin plugin = (JavaPlugin) PLUGIN_FIELD.get(loader);
             return plugin.getName();
         }
+        */ // Solar end
         return null;
     }
 }

@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':spark-common')
+/* Solar start
     implementation('me.lucko:adventure-platform-bukkit:4.7.0') {
         exclude(module: 'adventure-api')
         exclude(module: 'checker-qual')
@@ -7,18 +8,10 @@ dependencies {
         exclude(module: 'adventure-text-serializer-gson')
         exclude(module: 'adventure-text-serializer-legacy')
     }
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.4-R0.1-SNAPSHOT'
-    
-    // placeholders
-    compileOnly 'me.clip:placeholderapi:2.10.3'
-    compileOnly('be.maximvdw:MVdWPlaceholderAPI:3.0.1-SNAPSHOT') {
-        exclude(module: 'MVdWUpdater')
-    }
+*/
+    compileOnly 'gg.solarmc.paper:solarpaper-api:1.2.1-SNAPSHOT'
 }
-
-repositories {
-    maven { url 'https://papermc.io/repo/repository/maven-public/' }
-}
+// Solar end
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {

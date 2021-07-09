@@ -14,14 +14,16 @@ include (
         'spark-api',
         'spark-common',
         'spark-bukkit',
-        'spark-bungeecord',
+// Solar        'spark-bungeecord',
         'spark-velocity',
         'spark-velocity4',
+/* Solar start
         'spark-sponge',
         'spark-sponge8',
         'spark-forge',
         'spark-forge1122',
         'spark-fabric',
         'spark-nukkit',
-        'spark-universal'
+Solar end */
+       'spark-universal'
 )

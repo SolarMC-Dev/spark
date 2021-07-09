@@ -32,8 +32,10 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://repo.lucko.me/" }
         maven { url "https://jitpack.io" }
+        maven { url "https://mvn-repo.solarmc.gg/releases" }
+        maven { url "https://mvn-repo.solarmc.gg/snapshots" }
+        maven { url "https://mvn-repo.arim.space/lesser-gpl3" }
     }
 
 }

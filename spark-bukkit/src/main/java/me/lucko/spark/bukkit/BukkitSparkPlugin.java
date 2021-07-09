@@ -21,8 +21,10 @@
 package me.lucko.spark.bukkit;
 
 import me.lucko.spark.api.Spark;
+/* Solar start
 import me.lucko.spark.bukkit.placeholder.SparkMVdWPlaceholders;
 import me.lucko.spark.bukkit.placeholder.SparkPlaceholderApi;
+*/ // Solar end
 import me.lucko.spark.common.SparkPlatform;
 import me.lucko.spark.common.SparkPlugin;
 import me.lucko.spark.common.platform.PlatformInfo;
@@ -31,7 +33,7 @@ import me.lucko.spark.common.tick.TickHook;
 import me.lucko.spark.common.tick.TickReporter;
 import me.lucko.spark.common.util.ClassSourceLookup;
 
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+//import net.kyori.adventure.platform.bukkit.BukkitAudiences; // Solar
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -45,7 +47,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
-    private BukkitAudiences audienceFactory;
+//    private BukkitAudiences audienceFactory; // Solar - remove BukkitAudiences
     private SparkPlatform platform;
 
     private CommandExecutor tpsCommand = null;
@@ -53,7 +55,7 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
 
     @Override
     public void onEnable() {
-        this.audienceFactory = BukkitAudiences.create(this);
+//        this.audienceFactory = BukkitAudiences.create(this); // Solar
 
         this.platform = new SparkPlatform(this);
         this.platform.enable();
@@ -66,7 +68,7 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
                     return true;
                 }
 
-                BukkitCommandSender s = new BukkitCommandSender(sender, this.audienceFactory) {
+                BukkitCommandSender s = new BukkitCommandSender(sender) { // Solar
                     @Override
                     public boolean hasPermission(String permission) {
                         return true;
@@ -78,6 +80,7 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
             CommandMapUtil.registerCommand(this, this.tpsCommand, "tps");
         }
 
+/* Solar start
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new SparkPlaceholderApi(this, this.platform);
             getLogger().info("Registered PlaceholderAPI placeholders");
@@ -86,6 +89,7 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
             new SparkMVdWPlaceholders(this, this.platform);
             getLogger().info("Registered MVdWPlaceholderAPI placeholders");
         }
+*/ // Solar end
     }
 
     @Override
@@ -99,13 +103,13 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         this.threadDumper.ensureSetup();
-        this.platform.executeCommand(new BukkitCommandSender(sender, this.audienceFactory), args);
+        this.platform.executeCommand(new BukkitCommandSender(sender), args); // Solar
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return this.platform.tabCompleteCommand(new BukkitCommandSender(sender, this.audienceFactory), args);
+        return this.platform.tabCompleteCommand(new BukkitCommandSender(sender), args); // Solar
     }
 
     @Override
@@ -128,7 +132,7 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
         return Stream.concat(
                 getServer().getOnlinePlayers().stream(),
                 Stream.of(getServer().getConsoleSender())
-        ).map(sender -> new BukkitCommandSender(sender, this.audienceFactory));
+        ).map(sender -> new BukkitCommandSender(sender)); // Solar
     }
 
     @Override
@@ -144,18 +148,22 @@ public class BukkitSparkPlugin extends JavaPlugin implements SparkPlugin {
     @Override
     public TickHook createTickHook() {
         if (classExists("com.destroystokyo.paper.event.server.ServerTickStartEvent")) {
+// Solar start
+            getLogger().info("Bring back PaperTickHook from commit history, please"); 
+        } /*
             getLogger().info("Using Paper ServerTickStartEvent for tick monitoring");
             return new PaperTickHook(this);
         } else {
+*/ // Solar end
             getLogger().info("Using Bukkit scheduler for tick monitoring");
             return new BukkitTickHook(this);
-        }
+//        } // Solar end
     }
 
     @Override
     public TickReporter createTickReporter() {
         if (classExists("com.destroystokyo.paper.event.server.ServerTickStartEvent")) {
-            return new PaperTickReporter(this);
+//            return new PaperTickReporter(this); // Solar
         }
         return null;
     }

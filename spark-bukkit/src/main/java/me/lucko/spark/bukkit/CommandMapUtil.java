@@ -37,8 +37,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -48,38 +46,8 @@ import java.util.Map;
 enum CommandMapUtil {
     ;
 
-    private static final Constructor<PluginCommand> COMMAND_CONSTRUCTOR;
-    private static final Field COMMAND_MAP_FIELD;
-    private static final Field KNOWN_COMMANDS_FIELD;
-
-    static {
-        try {
-            COMMAND_CONSTRUCTOR = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
-            COMMAND_CONSTRUCTOR.setAccessible(true);
-            COMMAND_MAP_FIELD = SimplePluginManager.class.getDeclaredField("commandMap");
-            COMMAND_MAP_FIELD.setAccessible(true);
-            KNOWN_COMMANDS_FIELD = SimpleCommandMap.class.getDeclaredField("knownCommands");
-            KNOWN_COMMANDS_FIELD.setAccessible(true);
-        } catch (NoSuchMethodException | NoSuchFieldException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-    }
-
     private static CommandMap getCommandMap() {
-        try {
-            return (CommandMap) COMMAND_MAP_FIELD.get(Bukkit.getServer().getPluginManager());
-        } catch (Exception e) {
-            throw new RuntimeException("Could not get CommandMap", e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<String, Command> getKnownCommandMap(CommandMap commandMap) {
-        try {
-            return (Map<String, Command>) KNOWN_COMMANDS_FIELD.get(commandMap);
-        } catch (Exception e) {
-            throw new RuntimeException("Could not get known commands map", e);
-        }
+        return Bukkit.getServer().getCommandMap();
     }
 
     /**
@@ -92,11 +60,11 @@ enum CommandMapUtil {
     public static void registerCommand(Plugin plugin, CommandExecutor command, String... aliases) {
         Preconditions.checkArgument(aliases.length != 0, "No aliases");
         CommandMap commandMap = getCommandMap();
-        Map<String, Command> knownCommandMap = getKnownCommandMap(commandMap);
+        Map<String, Command> knownCommandMap = commandMap.getKnownCommands();
 
         for (String alias : aliases) {
             try {
-                PluginCommand cmd = COMMAND_CONSTRUCTOR.newInstance(alias, plugin);
+                PluginCommand cmd = new PluginCommand(alias, plugin);
 
                 commandMap.register(plugin.getDescription().getName(), cmd);
                 knownCommandMap.put(plugin.getDescription().getName().toLowerCase() + ":" + alias.toLowerCase(), cmd);
@@ -122,7 +90,7 @@ enum CommandMapUtil {
      */
     public static void unregisterCommand(CommandExecutor command) {
         CommandMap commandMap = getCommandMap();
-        Map<String, Command> knownCommandMap = getKnownCommandMap(commandMap);
+        Map<String, Command> knownCommandMap = commandMap.getKnownCommands();
 
         Iterator<Command> iterator = knownCommandMap.values().iterator();
         while (iterator.hasNext()) {

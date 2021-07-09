@@ -23,7 +23,7 @@ package me.lucko.spark.bukkit;
 import me.lucko.spark.common.command.sender.AbstractCommandSender;
 
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+// import net.kyori.adventure.platform.bukkit.BukkitAudiences; // Solar
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.command.CommandSender;
@@ -34,9 +34,9 @@ import java.util.UUID;
 public class BukkitCommandSender extends AbstractCommandSender<CommandSender> {
     private final Audience audience;
 
-    public BukkitCommandSender(CommandSender sender, BukkitAudiences audienceFactory) {
+    public BukkitCommandSender(CommandSender sender) { // Solar - remove BukkitAudiences
         super(sender);
-        this.audience = audienceFactory.sender(sender);
+        this.audience = sender; // Solar
     }
 
     @Override
